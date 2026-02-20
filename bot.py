@@ -3,7 +3,26 @@ from telebot import types
 import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
+from flask import Flask, request
+import telebot
+import os
 
+TOKEN = os.environ['TOKEN']
+bot = telebot.TeleBot(TOKEN)
+app = Flask(__name__)
+
+@app.route('/telegram', methods=['POST'])
+def telegram_webhook():
+    json_str = request.get_data().decode('UTF-8')
+    update = telebot.types.Update.de_json(json_str)
+    bot.process_new_updates([update])
+    return "OK", 200
+
+if __name__ == "__main__":
+    bot.remove_webhook()
+    bot.set_webhook(url='https://your-service.onrender.com/telegram')
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+    
 # ==============================
 # CONFIG
 # ==============================
@@ -190,4 +209,5 @@ def search_name(message):
 # RUN BOT
 # ==============================
 print("BOT STARTED")
+
 bot.infinity_polling()
