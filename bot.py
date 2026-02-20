@@ -403,7 +403,6 @@ def telegram_webhook():
 
 if __name__ == "__main__":
     bot.remove_webhook()
-    # هذا الرابط سيظهر بعد تشغيل المشروع
     bot.set_webhook(url=f"https://{os.environ['REPL_SLUG']}.{os.environ['REPL_OWNER']}.repl.co/telegram")
     app.run(host="0.0.0.0", port=3000)
 
@@ -422,6 +421,7 @@ bot.infinity_polling()
 print("BOT STARTED")
 
 bot.infinity_polling()
+
 
 
 
