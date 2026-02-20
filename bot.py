@@ -4,24 +4,14 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from datetime import datetime
 from flask import Flask, request
-import telebot
 import os
+import telebot
 
-TOKEN = os.environ['TOKEN']
+TOKEN = os.environ.get("8022519974:AAFum9LXqTGiy4DDQf32yG5ZukkfYyjyzoI")
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__)
 
-@app.route('/telegram', methods=['POST'])
-def telegram_webhook():
-    json_str = request.get_data().decode('UTF-8')
-    update = telebot.types.Update.de_json(json_str)
-    bot.process_new_updates([update])
-    return "OK", 200
-
-if __name__ == "__main__":
-    bot.remove_webhook()
-    bot.set_webhook(url='https://your-service.onrender.com/telegram')
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)))
+# ضع كل handlers (add/remove/show items) قبل هذا الجزء
     
 # ==============================
 # CONFIG
@@ -205,9 +195,24 @@ def search_name(message):
         bot.send_message(message.chat.id, "المادة غير موجودة")
     user_states.pop(message.chat.id)
 
+
+@app.route("/telegram", methods=["POST"])
+def telegram_webhook():
+    json_str = request.get_data().decode("UTF-8")
+    update = telebot.types.Update.de_json(json_str)
+    bot.process_new_updates([update])
+    return "OK", 200
+
+if __name__ == "__main__":
+    bot.remove_webhook()
+    bot.set_webhook(url=f"https://{os.environ['REPL_SLUG']}.{os.environ['REPL_OWNER']}.repl.co/telegram")
+    app.run(host="0.0.0.0", port=3000)
+
+
 # ==============================
 # RUN BOT
 # ==============================
 print("BOT STARTED")
 
 bot.infinity_polling()
+
